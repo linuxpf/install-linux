@@ -1,5 +1,4 @@
 #!/bin/bash
-#xycdn
 [ ! -f /tmp/Install_diskutil.sh ] && echo "Install_diskutil.sh not exist!" && exit 1
 ###################
 
@@ -38,6 +37,11 @@ if [ `cat $pcilog | grep -E "RAID bus controller|RAID controller" | grep -E "Meg
 		wget  "http://mirrors.xxx.com/images/.config/diskutil/$installer"   -o /dev/null -O /tmp/$installer || alarm_downerr
 		rpm -ivh /tmp/$installer || alarm_insterr
 		echo "Megacli install succeed !"
+                 /opt/MegaRAID/MegaCli/MegaCli64  -LDSetProp  RA -Lall -a0
+                 /opt/MegaRAID/MegaCli/MegaCli64  -LDSetProp  WB -Lall -a0 
+                 /opt/MegaRAID/MegaCli/MegaCli64 -LDSetProp CachedBadBBU -LAll -aAll
+                 [ `/opt/MegaRAID/MegaCli/MegaCli64 -adpgetprop  -NCQdsply -a0|grep Enabled|wc -l` -gt 0 ] && echo 'ncq enabeled' || /opt/MegaRAID/MegaCli/MegaCli64 -adpsetprop -NCQenbl -a0
+ 
 	else 
 		echo "MegaCli already exist !"
 	fi

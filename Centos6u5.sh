@@ -66,10 +66,9 @@ if [ -n $gw ];then
     grep -q ${network} /etc/hosts.allow ||echo "sshd:${lan_range}" >> /etc/hosts.allow
 
 fi
-##add hosts.allow to xycdn 
+##add hosts.allow to 
 #grep -q "125.39.70.130" /etc/hosts.allow ||sed -i '/essh_backup/a sshd:119.147.41.43 123.150.173.130 125.39.70.130\nsshd:123.150.185.243 111.161.24.243 123.150.185.242 111.161.24.242' /etc/hosts.allow
 cat << EOF >/etc/hosts.allow
-#xycdn 
 sshd:$ip
 #backup
 sshd:$bakcup_ip
@@ -99,7 +98,7 @@ cat <<'EOF'
 -A RH-Firewall-1-INPUT -p icmp --icmp-type any -j ACCEPT
 -A RH-Firewall-1-INPUT -s x.x.x.x -j ACCEPT
 -A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
--A RH-Firewall-1-INPUT -m state --state NEW -m tcp -m multiport -p tcp --dports 80,1935,1936,1940 -j ACCEPT
+-A RH-Firewall-1-INPUT -m state --state NEW -m tcp -m multiport -p tcp --dports 80,8000 -j ACCEPT
 -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
 -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
 COMMIT
@@ -165,11 +164,11 @@ chmod +x /usr/local/irq.py
 
 ####8 Config crontab
 [ ! -f /var/spool/cron/root ] && touch /var/spool/cron/root
-if ! fgrep -q 'ntp.cc.xxx.com' /var/spool/cron/root;then
+if ! fgrep -q 'ntp.xxx.com' /var/spool/cron/root;then
 {
 cat <<'EOF'
 1 0 * * * /usr/sbin/ntpdate clock.isc.org &
-1 3 * * * /usr/sbin/ntpdate ntp.cc.xxx.com &
+1 3 * * * /usr/sbin/ntpdate ntp.xxx.com &
 */5 * * * * /sbin/iptables -Z
 EOF
 } > /var/spool/cron/root
@@ -397,8 +396,7 @@ if [ ! -f /root/.ssh/authorized_keys ]; then
 fi
 if ! fgrep -q "xvpn" /root/.ssh/authorized_keys;then
 echo "#backup host" >> /root/.ssh/authorized_keys
-echo "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAxHyYQPMR4oS+nWTOqoUxMUEOnzseWHi1UOLB/Qg6UedPmunfrbajOw/Wt6iiNtL+hpSbUr05dxeWRj4BNt47rdD3Ntaxd5XwM4hUfkCBx/ZTpCEXcKKBDVQeL7y8U/PkTOHzpdgQPUUB4czw4JsYhb2Z3I1UjOM2uLEt84miLyA3O4NrcuP6JKPxM8f1JyjEaEocrGRrO3J0N1yxlOTY7h+8Edol++JsQN3VsFzz8t8oNmzD8xHfgIyzMAOwbJqBeagGOF9e+kBzlolVAhIM2Hz6TBK7CxPRiZq7s0bzrEU9S1kuMAHwdqdfTJG7/Yx2wxWl+fp9WWppXcL2WhmCbw== root@xvpn" >> /root/.ssh/authorized_keys
-
+echo "" >> /root/.ssh/authorized_keys
 fi
 
 
